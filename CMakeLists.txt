@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project( handTracking )
+find_package( OpenCV REQUIRED )
+add_executable( handTracking handTracking.cpp )
+target_link_libraries( handTracking ${OpenCV_LIBS} )
