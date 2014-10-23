@@ -21,11 +21,12 @@ int main(int argc, char* argv[])
 	}
 
 	Mat frame, back, fore;
-	Ptr<BackgroundSubtractorMOG2> bg = new BackgroundSubtractorMOG2(30.0,16.0,0);
+	Ptr<BackgroundSubtractorMOG2> bg = new BackgroundSubtractorMOG2();
 	namedWindow("Original");
     namedWindow("Background");
 
     vector<vector<Point> > contours;
+    vector<Point> hand;
 
 	while(1)
 	{
@@ -36,9 +37,10 @@ int main(int argc, char* argv[])
 		erode(fore,fore,Mat());
         dilate(fore,fore,Mat());
         findContours(fore,contours,CV_RETR_EXTERNAL,CV_CHAIN_APPROX_NONE);
-        
+	        
         int largestArea = 0, largestIndex;
     	Rect bounding_rect;
+    	vector<vector<Point> > hull(contours.size());
 
         for (int i = 0;i < contours.size();i++)
     	{
@@ -48,11 +50,12 @@ int main(int argc, char* argv[])
     			largestArea = a;
     			bounding_rect = boundingRect(contours[i]);
     			largestIndex = i;
+    			convexHull(contours[i],hull[i]);
     		}
     	}
 
-        drawContours(frame,contours,largestIndex,Scalar(0,0,255),2);        
-    	
+        
+        drawContours(frame,hull,largestIndex,Scalar(0,0,255),2);        
     	rectangle(frame, bounding_rect,  Scalar(0,255,0),1, 8,0);
 
 		// Mat object = backgroundSubtraction(frame1,frame2);
